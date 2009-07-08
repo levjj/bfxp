@@ -1,0 +1,5 @@
+{ bfxp-program }
+
+byte a;
+a=8;
+puti a;

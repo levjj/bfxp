@@ -1,0 +1,20 @@
+{ bfxp-program }
+
+byte a;
+byte b;
+byte c;
+byte d;
+byte e;
+
+a=1;
+b=1;
+c=a;
+c+=b; # c = 2
+
+d=b;
+d+=c; # d = 3
+
+e=c;
+e+=d; # e = 5
+
+puti e;
