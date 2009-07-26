@@ -1,17 +1,17 @@
 { bfxp-program }
 
-byte count;
+byte counter;
 byte input;
 
-count = 0;
+counter = 0; # initialize counter to zero
 
-puti(count);
+puti(counter);
 input = getc();
-input -= 48;
-while(input) {
+input -= 48;  # treat input character as digit
+while(input) { # while input is not the '0' digit
   input -= 2;
-  count += input;
-  puti(count);
+  counter += input; # add (input-2) to counter
+  puti(counter); # print counter
   input = getc();
   input -= 48;
 }
