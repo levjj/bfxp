@@ -1,15 +1,17 @@
 { bfxp-program }
 
 byte count;
-count = 0;
 byte input;
+
+count = 0;
 
 puti(count);
 input = getc();
 input -= 48;
-count += input;
-puti(count);
-input = getc();
-input -= 48;
-count += input;
-puti(count);
+while(input) {
+  input -= 2;
+  count += input;
+  puti(count);
+  input = getc();
+  input -= 48;
+}

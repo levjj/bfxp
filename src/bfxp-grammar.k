@@ -26,6 +26,13 @@
     ASSIGNSUB   = '-=' _
     STARTP      = '(' _
     ENDP        = ')' _
+    STARTB      = '{' _
+    ENDB        = '}' _
+    
+    //
+    // keywords
+    //
+    WHILE       = 'while' _
     
     //
     // built-in data types
@@ -81,20 +88,30 @@
             <- `(bf-getc)
         | PUTI STARTP value->0 ENDP
             <- `(let ()
-                 ,[self @ '0]
-                 (bf2k-puti))
+                  ,[self @ '0]
+                  (bf2k-puti))
         | PUTC STARTP value->0 ENDP
             <- `(let ()
-                 ,[self @ '0]
-                 (bf-putc))
+                  ,[self @ '0]
+                  (bf-putc))
+   
+    while = WHILE STARTP value->0 ENDP STARTB
+              statement*->1
+            ENDB <- `(let ()
+                       ,[self @ '0]
+                       (bf-while)
+                       ,@[self @ '1]
+                       ,[self @ '0]
+                       (bf-wend))
    
     statement =
-          (declaration
+         ((declaration
         |  assignment
         |  assignmentadd
         |  assignmentsub
         |  application)
-           semicolon
+           semicolon)
+        |  while
     
     statements = statement*->0
                    <- `(let ()
