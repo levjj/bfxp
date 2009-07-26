@@ -2,4 +2,4 @@
 
 byte a;
 a=8;
-puti a;
+puti(a);

@@ -17,4 +17,4 @@ d+=c; # d = 3
 e=c;
 e+=d; # e = 5
 
-puti e;
+puti(e);

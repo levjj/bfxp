@@ -5,33 +5,39 @@
 ; christopher.schuster@hpi.uni-potsdam.de
 
 ['{
-    eof     = !.
-    space   = [ \t] | eol
-    eol     = '\r' '\n'* | '\n' '\r'*
-    comment = '#' (!eol .)* eol
-    _       = ( space | comment )*
-    semicolon = ';' _
+    eof         = !.
+    space       = [ \t] | eol
+    eol         = '\r' '\n'* | '\n' '\r'*
+    comment     = '#' (!eol .)* eol
+    _           = ( space | comment )*
+    semicolon   = ';' _
     
     digit       = [0-9]
-    number      = (digit+) $->0 _  <- [Integer fromString: [self @ '0]]
-    identifier  =
-          ([a-zA-Z_][a-zA-Z_0-9]*) $->0 _ <- [[self @ '0] asSymbol]
+    number      = (digit+) $->0 _
+                    <- [Integer fromString: [self @ '0]]
+    identifier  = ([a-zA-Z_][a-zA-Z_0-9]*) $->0 _
+                    <- [[self @ '0] asSymbol]
     
     //
     // symbols
     //
-    ASSIGNADD  = '+='  _
-    ASSIGN  = '='  _
+    ASSIGN      = '=' _
+    ASSIGNADD   = '+=' _
+    ASSIGNSUB   = '-=' _
+    STARTP      = '(' _
+    ENDP        = ')' _
     
     //
     // built-in data types
     //
-    BYTE = 'byte' _
+    BYTE        = 'byte' _
     
     //
     // built-in functions
     //
-    PUTI       = 'puti' _
+    PUTI        = 'puti' _
+    PUTC        = 'putc' _
+    GETC        = 'getc' _
     
     //
     // types
@@ -44,7 +50,8 @@
     //
         
     value = (
-          identifier->0 <- `(bfxp-cell ,[self @ '0])->1
+          application->1
+        | identifier->0 <- `(bfxp-cell ,[self @ '0])->1
         | number->0 <- `(let () (bf2k-seti ,[self @ '0])) ->1
           ) <- [self @ '1]
 
@@ -62,27 +69,47 @@
           ) <- `(let ()
                   ,[self @ '1]
                   (bfxp-add ,[self @ '0]))
+
+    assignmentsub = (
+          identifier->0 ASSIGNSUB value->1
+          ) <- `(let ()
+                  ,[self @ '1]
+                  (bfxp-sub ,[self @ '0]))
     
     application =
-          PUTI value->0 <- `(let ()
-                              ,[self @ '0]
-                              (bf2k-puti))
+          GETC STARTP ENDP
+            <- `(bf-getc)
+        | PUTI STARTP value->0 ENDP
+            <- `(let ()
+                 ,[self @ '0]
+                 (bf2k-puti))
+        | PUTC STARTP value->0 ENDP
+            <- `(let ()
+                 ,[self @ '0]
+                 (bf-putc))
    
     statement =
           (declaration
         |  assignment
         |  assignmentadd
+        |  assignmentsub
         |  application)
            semicolon
     
-    program = _ ( statement
-                        <- (let ()
-                             ;;[result println]
-                             (let ((value [result eval]))
-                               ;;['"=>" putln]
-                               ;;[value println]
-                               value))
-                )* <- '0
-
+    statements = statement*->0
+                   <- `(let ()
+                         (bf-next)
+                         (bf-next)
+                         (bf-next)
+                         ,@[self @ '0])
+    
+    program = _ statements
+                  <- (let ()
+                       ;;[result println]
+                          (let ((value [result eval]))
+                            ;;['"=>" putln]
+                            ;;[value println]
+                            value
+                            (printf "\n")))
 
 } name: 'bfxp ]

@@ -106,6 +106,17 @@
         (bfxp-prev ,[node second])
       (bf-wend))))
 
+(syntax bfxp-subforward ;; (bfxp-subforward 1)
+                        ;; subs the current cell value to the next cell
+  (lambda (node compiler)
+    `(let ()
+      (bf-while)
+        (bf-dec)
+        (bfxp-next ,[node second])
+        (bf-dec)
+        (bfxp-prev ,[node second])
+      (bf-wend))))
+
 (syntax bfxp-addbackward ;; (bfxp-addbackward 1)
                     ;; adds the current cell value to the previous cell
   (lambda (node compiler)
@@ -147,6 +158,11 @@
   (lambda (node compiler)
     `(let ()
       (bfxp-addforward (+ 1 ,(get-var [node second]))))))
+
+(syntax bfxp-sub ;; (bfxp-sub x) subs the last result from var x
+  (lambda (node compiler)
+    `(let ()
+      (bfxp-subforward (+ 1 ,(get-var [node second]))))))
 
 (syntax bfxp-move2 ;; (bfxp-move2 x) moves the last result to var x
   (lambda (node compiler)

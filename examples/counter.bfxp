@@ -1,0 +1,15 @@
+{ bfxp-program }
+
+byte count;
+count = 0;
+byte input;
+
+puti(count);
+input = getc();
+input -= 48;
+count += input;
+puti(count);
+input = getc();
+input -= 48;
+count += input;
+puti(count);
