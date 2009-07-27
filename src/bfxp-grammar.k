@@ -115,9 +115,9 @@
     
     statements = statement*->0
                    <- `(let ()
-                         (bf-next)
-                         (bf-next)
-                         (bf-next)
+                         (bfxp-next 4)
+                         (bf-inc) ;; initilize the one-field
+                         (bf-prev)
                          ,@[self @ '0])
     
     program = _ statements
