@@ -1,8 +1,8 @@
-; bfxp implementation
+; bfxp grammar
 ; first version of a simple imperative language
 ; (c) 2009 Michael Haupt, Christopher Schuster
 ; michael.haupt@hpi.uni-potsdam.de
-; christopher.schuster@hpi.uni-potsdam.de
+; cs@livoris.de
 
 ['{
     eof         = !.

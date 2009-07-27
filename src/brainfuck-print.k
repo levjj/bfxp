@@ -1,9 +1,8 @@
-;;
-;; Copyright (C) 2009 Christopher Schuster <cs@livoris.de>
-;; Released under the terms of the GNU GPL v2.0.
-;;
-
-;; Semantics to print a Brainfuck-AST
+; Brainfuck "print" semantics
+; first version of a simple imperative language
+; (c) 2009 Michael Haupt, Christopher Schuster
+; michael.haupt@hpi.uni-potsdam.de
+; cs@livoris.de
 
 (syntax bf-putc
   (lambda (node compiler)
