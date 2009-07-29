@@ -55,33 +55,39 @@
     //
     // syntax tree
     //
-        
+    
+    left =
+          identifier->0 <- `(bfxp-varaddress ,[self @ '0])
+
     value = (
           application->1
-        | identifier->0 <- `(bfxp-cell ,[self @ '0])->1
-        | number->0 <- `(let () (bf2k-seti ,[self @ '0])) ->1
+        | left->0 <- `(let () ,[self @ '0] (bfxp-cell ,[self @ '0]))->1
+        | number->0 <- `(bf2k-seti ,[self @ '0])->1
           ) <- [self @ '1]
 
     declaration =
           type identifier->0 <- (add-var [self @ '0])
 
     assignment = (
-          identifier->0 ASSIGN value->1
+          left->0 ASSIGN value->1
           ) <- `(let ()
                   ,[self @ '1]
-                  (bfxp-move2 ,[self @ '0]))
+                  ,[self @ '0]
+                  (bfxp-store))
 
     assignmentadd = (
-          identifier->0 ASSIGNADD value->1
+          left->0 ASSIGNADD value->1
           ) <- `(let ()
                   ,[self @ '1]
-                  (bfxp-add ,[self @ '0]))
+                  ,[self @ '0]
+                  (bfxp-add))
 
     assignmentsub = (
-          identifier->0 ASSIGNSUB value->1
+          left->0 ASSIGNSUB value->1
           ) <- `(let ()
                   ,[self @ '1]
-                  (bfxp-sub ,[self @ '0]))
+                  ,[self @ '0]
+                  (bfxp-sub))
     
     application =
           GETC STARTP ENDP
@@ -114,18 +120,16 @@
         |  while
     
     statements = statement*->0
-                   <- `(let ()
-                         (bfxp-next 4)
-                         (bf-inc) ;; initilize the one-field
-                         (bf-prev)
-                         ,@[self @ '0])
+                  <- `(let ()
+                        (bfxp-setup)
+                        ,@[self @ '0])
     
     program = _ statements
                   <- (let ()
-                       ;;[result println]
+                       ;[result println]
                           (let ((value [result eval]))
-                            ;;['"=>" putln]
-                            ;;[value println]
+                            ;['"=>" putln]
+                            ;[value println]
                             value
                             (printf "\n")))
 

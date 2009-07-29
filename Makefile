@@ -1,4 +1,4 @@
-JOLT2 = /home/cs/devel/cola/idst/function/jolt2
+JOLT2 = /home/cschuster/devel/cola/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k

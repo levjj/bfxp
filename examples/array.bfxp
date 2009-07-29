@@ -1,0 +1,8 @@
+{ bfxp-program }
+
+byte[3] a;
+byte[4] b;
+a[0]=9;
+a[1]=2;
+b[a[1]] = a[0];
+puti(b[2]); # should output 9
