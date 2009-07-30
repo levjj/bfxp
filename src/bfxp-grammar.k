@@ -19,19 +19,29 @@
                     <- [[self @ '0] asSymbol]
     
     //
-    // symbols
+    // operators
     //
+    PLUS        = '+' _
+    MINUS       = '-' _
+    COMPARE     = '==' _
     ASSIGN      = '=' _
     ASSIGNADD   = '+=' _
     ASSIGNSUB   = '-=' _
-    STARTP      = '(' _
-    ENDP        = ')' _
-    STARTB      = '{' _
-    ENDB        = '}' _
+    
+    //
+    // parantheses
+    //
+    STARTPARA   = '(' _
+    ENDPARA     = ')' _
+    STARTBLOCK  = '{' _
+    ENDBLOCK    = '}' _
+    STARTINDEX  = '[' _
+    ENDINDEX    = ']' _
     
     //
     // keywords
     //
+    IF          = 'if' _
     WHILE       = 'while' _
     
     //
@@ -50,23 +60,56 @@
     // types
     //
     
-    type = BYTE
+    type = BYTE <- '1
+         | BYTE STARTINDEX number->0 ENDINDEX <- [self @ '0]
         
     //
     // syntax tree
     //
     
+    declaration =
+          type->0 identifier->1 <- (add-var [self @ '1] [self @ '0])
+
     left =
           identifier->0 <- `(bfxp-varaddress ,[self @ '0])
 
     value = (
-          application->1
-        | left->0 <- `(let () ,[self @ '0] (bfxp-cell ,[self @ '0]))->1
-        | number->0 <- `(bf2k-seti ,[self @ '0])->1
-          ) <- [self @ '1]
+            application->1
+          | left->0 <- `(let () ,[self @ '0] (bfxp-cell ,[self @ '0]))->1
+          | number->0 <- `(bf2k-seti ,[self @ '0])->1
+            ) <- [self @ '1]
 
-    declaration =
-          type identifier->0 <- (add-var [self @ '0])
+    sum = expression->0 PLUS value->1
+            <- `(let ()
+                  ,[self @ '0]
+                  (bfxp-addbackward 3)
+                  ,[self @ '1]
+                  (bfxp-prev 3)
+                  (bfxp-addforward 3)
+                  (bfxp-next 3))
+
+    difference = expression->0 MINUS value->1
+            <- `(let ()
+                  ,[self @ '0]
+                  (bfxp-addbackward 3)
+                  ,[self @ '1]
+                  (bfxp-prev 3)
+                  (bfxp-subforward 3)
+                  (bfxp-next 3))
+
+    comparison = expression->0 COMPARE value->1
+            <- `(let ()
+                  ,[self @ '0]
+                  (bfxp-addbackward 3)
+                  ,[self @ '1]
+                  (bfxp-prev 3)
+                  (bfxp-subforward 3)
+                  (bfxp-next 3))
+
+    expression = value
+               | sum
+               | difference
+               | comparison
 
     assignment = (
           left->0 ASSIGN value->1
@@ -90,25 +133,25 @@
                   (bfxp-sub))
     
     application =
-          GETC STARTP ENDP
+          GETC STARTPARA ENDPARA
             <- `(bf-getc)
-        | PUTI STARTP value->0 ENDP
+        | PUTI STARTPARA value->0 ENDPARA
             <- `(let ()
                   ,[self @ '0]
                   (bf2k-puti))
-        | PUTC STARTP value->0 ENDP
+        | PUTC STARTPARA value->0 ENDPARA
             <- `(let ()
                   ,[self @ '0]
                   (bf-putc))
    
-    while = WHILE STARTP value->0 ENDP STARTB
+    while = WHILE STARTPARA value->0 ENDPARA STARTBLOCK
               statement*->1
-            ENDB <- `(let ()
-                       ,[self @ '0]
-                       (bf-while)
-                       ,@[self @ '1]
-                       ,[self @ '0]
-                       (bf-wend))
+            ENDBLOCK <- `(let ()
+                           ,[self @ '0]
+                           (bf-while)
+                             ,@[self @ '1]
+                             ,[self @ '0]
+                           (bf-wend))
    
     statement =
          ((declaration

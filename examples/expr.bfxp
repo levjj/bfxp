@@ -1,0 +1,13 @@
+{ bfxp-program }
+
+byte a;
+byte b;
+a = 8 + 5;
+b = getc(b);
+b = b - 48;
+if (b == 3) {
+  puti(1);
+} else {
+  puti(2);
+}
+

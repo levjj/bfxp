@@ -23,7 +23,7 @@
 ;;  Constants
 ;;  ---------
 
-(define number-of-temporary-fields 2)
+(define TemporaryFields 3)
 
 ;;  -------
 ;;  Imports
@@ -36,7 +36,7 @@
 ;;  Global State
 ;;  ------------
 
-(define UsedMemory 0)
+(define UsedMemory '0)
 (define SymbolTable [Dictionary new])
 
 ;;  --------------
@@ -44,15 +44,10 @@
 ;;  --------------
 
 (define add-var
-  (lambda (name)
+  (lambda (name size)
     (let ()
-      [SymbolTable at: name put: [SymbolTable size]]
-      (set UsedMemory (+ `UsedMemory 1))
-      ;[UsedMemory print])
-)))
-
-;;      [SymbolTable at: name put: `UsedMemory]
-;;      (set UsedMemory (+ UsedMemory 1)))))
+      [SymbolTable at: name put: UsedMemory]
+      (set UsedMemory [UsedMemory + size]))))
 
 (define get-var
   (lambda (name)
@@ -174,7 +169,7 @@
   ;;         pointer at L
   (lambda (node compiler)
     `(let ()
-      (bfxp-next (+ number-of-temporary-fields 1))
+      (bfxp-next (+ TemporaryFields 1))
       (bf-inc) ; initialize the one-field
       (bf-prev))))
 
