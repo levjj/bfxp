@@ -97,9 +97,8 @@
   ;; result: sets the value of CC to n
   (lambda (node compiler)
     `(let ()
-      (bf-while) ; while (CC > 0) {
-        (bf-dec) ;   CC := CC - 1;
-      (bf-wend)  ; }
+      (bf-while ; while (CC > 0)
+        (bf-dec)) ;   CC := CC - 1;
       (bf2k-inc ,[node second]))))
 
 (syntax bf2k-puti
@@ -119,10 +118,9 @@
   ;;         stops the pointer at the null-char
   (lambda (node compiler)
     `(let ()
-      (bf-while)
+      (bf-while
         (bf-putc)
-        (bf-next)
-      (bf-wend))))
+        (bf-next)))))
 
 (syntax bf2k-sets
   ;; call: (bf2k-sets "My String")
@@ -180,12 +178,24 @@
   ;;         [CC + n] := [CC + n] + value to add
   (lambda (node compiler)
     `(let ()
-      (bf-while) ; while (CC > 0) {
+      (bf-while ; while (CC > 0)
         (bf-dec) ;   CC := CC - 1;
         (bfxp-next ,[node second])
         (bf-inc) ;   [CC + n] := [CC + n] + 1;
-        (bfxp-prev ,[node second])
-      (bf-wend)))) ; }
+        (bfxp-prev ,[node second])))))
+
+(syntax bfxp-subforward
+  ;; call: (bfxp-subforward n)
+  ;; prerequisites: CC = value to subtract
+  ;; result: CC := 0
+  ;;         [CC + n] := [CC + n] - value to subtract
+  (lambda (node compiler)
+    `(let ()
+      (bf-while ; while (CC > 0)
+        (bf-dec) ;   CC := CC - 1;
+        (bfxp-next ,[node second])
+        (bf-dec) ;   [CC + n] := [CC + n] + 1;
+        (bfxp-prev ,[node second])))))
 
 (syntax bfxp-addbackward
   ;; call: (bfxp-addbackward n)
@@ -194,12 +204,11 @@
   ;;         [CC - n] := [CC - n] + value to add
   (lambda (node compiler)
     `(let ()
-      (bf-while) ; while (CC > 0) {
+      (bf-while ; while (CC > 0)
         (bf-dec) ;   CC := CC - 1;
         (bfxp-prev ,[node second])
         (bf-inc) ;   [CC - n] := [CC - n] + 1;
-        (bfxp-next ,[node second])
-      (bf-wend)))) ; }
+        (bfxp-next ,[node second])))))
 
 (syntax bfxp-addforward2
   ;; call: (bfxp-addforward n m)
@@ -209,15 +218,14 @@
   ;;         [CC + m] := [CC + m] + value to add
   (lambda (node compiler)
     `(let ()
-      (bf-while) ; while (CC > 0) {
+      (bf-while ; while (CC > 0)
         (bf-dec) ;   CC := CC - 1;
         (bfxp-next ,[node second])
         (bf-inc) ;   [CC + n] := [CC + n] + 1;
         (bfxp-prev ,[node second])
         (bfxp-next ,[node third])
         (bf-inc) ;   [CC + m] := [CC + m] + 1;
-        (bfxp-prev ,[node third])
-      (bf-wend)))) ; }
+        (bfxp-prev ,[node third])))))
 
 ;;  -------------------------------------
 ;;  Brainfuck XP Macros (Dynamic Address)
@@ -232,11 +240,10 @@
   (lambda (node compiler)
     `(let ()
       (bf-dec) ; decrement CC
-      (bf-while) ; if CC = 0 then it was 1 which means we are on the "one"-field
+      (bf-while  ; if CC = 0 then it was 1 which means we are on the "one"-field
         (bf-inc) ; recover old value of CC
         (bfxp-prev 2) ; to from Xn to X(n-1) or to the one-field
-        (bf-dec) ; decrement CC
-      (bf-wend)
+        (bf-dec)) ; decrement CC
       (bf-inc) ; restore the one-field
       (bf-prev)))) ; go from 1 to L
 
@@ -255,16 +262,14 @@
        (bfxp-addforward2 1 2) ; move value of one-cell to A and X0
        (bf-inc) ; increase one-cell to 1
        (bfxp-next 2) ; move to X0
-       (bf-while) ; we are done if there is a zero in the current tag cell
+       (bf-while  ; we are done if there is a zero in the current tag cell
          (bf-dec) ; decrement the current tag cell
-         (bf-while)       ; move the value in the current tag cell
+         (bf-while        ; move the value in the current tag cell
            (bfxp-next 2)  ; to the next if it is not zero
            (bf-inc)
            (bfxp-prev 2)  ; to the next if it is not zero
-           (bf-dec)
-         (bf-wend)
-         (bfxp-next 2)  ; move to next tag cell
-       (bf-wend)
+           (bf-dec))
+         (bfxp-next 2))  ; move to next tag cell
        (bf-next)))) ; we found it
 
 (syntax bfxp-add
@@ -277,14 +282,13 @@
   ;;         pointer at L
   (lambda (node compiler)
     `(let ()
-      (bf-while) ; while (L > 0) {
+      (bf-while ; while (L > 0)
         (bf-dec) ;   L := L - 1;
         (bfxp-next 2) ; move pointer to A
         (bfxp-goto) ; goto D[A]
         (bf-inc) ; D[A] := D[A] + 1
         (bf-prev) ; move pointer to X[A]
-        (bfxp-goback) ; move pointer to L
-      (bf-wend)))) ; }
+        (bfxp-goback))))) ; move pointer to L
 
 (syntax bfxp-sub
   ;; call: (bfxp-sub)
@@ -296,14 +300,13 @@
   ;;         pointer at L
   (lambda (node compiler)
     `(let ()
-      (bf-while) ; while (L > 0) {
+      (bf-while ; while (L > 0)
         (bf-dec) ;   L := L - 1;
         (bfxp-next 2) ; move pointer to A
         (bfxp-goto) ; goto D[A]
         (bf-dec) ; D[A] := D[A] - 1
         (bf-prev) ; move pointer to X[A]
-        (bfxp-goback) ; move pointer to L
-      (bf-wend)))) ; }
+        (bfxp-goback))))) ; move pointer to L
 
 (syntax bfxp-fetchcell
   ;; call: (bfxp-fetchcell)
@@ -319,15 +322,14 @@
       (bf2k-seti 0) ; T2 := 0;
       (bfxp-next 4) ; move pointer to A
       (bfxp-goto) ; goto D[A]
-      (bf-while) ; while (D[A] > 0) {
+      (bf-while  ; while (D[A] > 0)
         (bf-dec) ;   D[A] := D[A] - 1;
         (bf-prev) ;  move pointer to X[A]
         (bfxp-goback) ; move pointer to L
         (bfxp-prev 2) ; move pointer to T2
         (bf-inc) ; T2 := T2 + 1;
         (bfxp-next 4) ; move to A
-        (bfxp-goto) ; goto D[A]
-      (bf-wend)
+        (bfxp-goto)) ; goto D[A]
       (bf-prev) ;  move pointer to X[A]
       (bfxp-goback)))) ; move pointer to L
 
@@ -389,3 +391,93 @@
       (bfxp-next 2) ; move pointer to A
       (bf2k-inc ,(get-var [node second])) ; add varname base address to A
       (bfxp-prev 2)))) ; move pointer to L
+
+(syntax bfxp-sum
+  ;; call: (bfxp-sum expression value)
+  ;; prerequisites: pointer at L
+  ;; result: expression will be evaluated
+  ;;         value will be evaluated
+  ;;         L := expression result + value result
+  (lambda (node compiler)
+    `(let ()
+       ,[node second] ; evaluate expression
+       (bfxp-addbackward 3) ; store result in T3
+       ,[node third] ; evaluate value
+       (bfxp-prev 3) ; goto T3
+       (bfxp-addforward 3) ; L := L + T3
+       (bfxp-next 3)))) ; goto L
+
+(syntax bfxp-difference
+  ;; call: (bfxp-difference expression value)
+  ;; prerequisites: pointer at L
+  ;; result: expression will be evaluated
+  ;;         value will be evaluated
+  ;;         L := expression result - value result
+  (lambda (node compiler)
+    `(let ()
+       ,[node third] ; evaluate value
+       (bfxp-addbackward 3) ; store result in T3
+       ,[node second] ; evaluate expression
+       (bfxp-prev 3) ; goto T3
+       (bfxp-subforward 3) ; L := L - T3
+       (bfxp-next 3)))) ; goto L
+
+(syntax bfxp-compare
+  ;; call: (bfxp-compare expression value)
+  ;; prerequisites: pointer at L
+  ;; result: expression will be evaluated
+  ;;         value will be evaluated
+  ;;         if (expression == value) {
+  ;;           L := 1;
+  ;;         } else {
+  ;;           L := 0;
+  ;;         }
+  (lambda (node compiler)
+    `(let ()
+       ,[node second] ; evaluate expression
+       (bfxp-addbackward 3) ; store result in T3
+       ,[node third] ; evaluate value
+       (bfxp-prev 3) ; goto T3
+       (bfxp-subforward 3) ; L := L - T3
+       (bfxp-next 2) ; goto T1
+       (bf2k-seti 1) ; T1 := 1
+       (bf-next) ; goto L
+       (bf-while     ; if (L > 0)
+         (bf-prev)   ;   goto T1
+         (bf-dec)    ;   T1 := 0
+         (bf-next)   ;   goto L
+         (bf2k-seti 0)) ;   L := 0
+       (bf-prev) ; goto T1
+       (bfxp-addforward 1) ; L := T1
+       (bf-next)))) ; goto L
+
+(syntax bfxp-ifthenelse
+  ;; call: (bfxp-ifthenelse expression ifcase [elsecase?])
+  ;; prerequisites: pointer at L
+  ;; result: expression will be evaluated
+  ;;         if (expression > 0) {
+  ;;           ifcase will be evaluated;
+  ;;         } else {
+  ;;           optional elsecase will be evaluated
+  ;;         }
+  (lambda (node compiler)
+    `(let ()
+       ,[node second] ; evaluate expression       
+       (bf-prev) ; goto T1
+       (bf2k-seti 1) ; T1 := 1
+       (bf-next) ; goto L
+       (bf-while     ; if (L > 0)
+         ,@[node third] ; evaluate ifcase       
+         (bf-prev)   ;   goto T1
+         (bf-dec)    ;   T1 := 0
+         (bf-next)   ;   goto L
+         (bf2k-seti 0));   L := 0
+         (bf-prev) ; goto T1
+         (bf-while     ; if (T1 > 0)
+           (bf-next)   ;   goto L
+           ,@[node fourth] ; evaluate elsecase
+           (bf2k-seti 0) ;   L := 0
+           (bf-prev) ; goto T1
+           (bf2k-seti 0)) ;   T1 := 0
+         (bf-next)))) ; goto L
+

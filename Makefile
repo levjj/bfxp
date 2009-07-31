@@ -2,7 +2,7 @@ JOLT2 = /home/cs/devel/cola/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k
-RUN = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-print.k $(MAIN)
+RUN = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-exec.k $(MAIN)
 
 .PHONY: doc
 
@@ -14,14 +14,17 @@ doc :
 check : $(MAIN)
 	$(JOLT2)/main $(FLAGS) $(LIBS) $(MAIN)
 
-test :  $(MAIN) examples/a8.bfxp
+test : $(MAIN) examples/a8.bfxp
 	$(RUN) examples/a8.bfxp
 
-fib  :  $(MAIN) examples/minifib.bfxp
+fib : $(MAIN) examples/minifib.bfxp
 	$(RUN) examples/minifib.bfxp
 
-counter :  $(MAIN) examples/counter.bfxp
+counter : $(MAIN) examples/counter.bfxp
 	$(RUN) examples/counter.bfxp
+
+expr : $(MAIN) examples/expr.bfxp
+	$(RUN) examples/expr.bfxp
 
 clean : 
 	rm -f *~ *.so

@@ -6,32 +6,32 @@
 
 (syntax bf-putc
   (lambda (node compiler)
-    `['46 put]))
+    '['46 put]))
     
 (syntax bf-getc
   (lambda (node compiler)
-    `['44 put]))
+    '['44 put]))
 
 (syntax bf-prev
   (lambda (node compiler)
-    `['60 put]))
+    '['60 put]))
 
 (syntax bf-next
   (lambda (node compiler)
-    `['62 put]))
+    '['62 put]))
 
 (syntax bf-while
   (lambda (node compiler)
-    `['91 put]))
-
-(syntax bf-wend
-  (lambda (node compiler)
-    `['93 put]))
+    `(let ()
+      ['91 put]
+      ,@[node copyFrom: '1]
+      ['93 put])))
 
 (syntax bf-inc
   (lambda (node compiler)
-    `['43 put]))
+    '['43 put]))
  
 (syntax bf-dec
   (lambda (node compiler)
-    `['45 put]))
+    '['45 put]))
+

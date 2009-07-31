@@ -19,32 +19,30 @@
 
 (syntax bf-putc
   (lambda (node compiler)
-    `['46 put]))
+    '(putchar (char@ P))))
     
 (syntax bf-getc
   (lambda (node compiler)
-    `['44 put]))
+    '(set (char@ P) (getchar))))
 
 (syntax bf-prev
   (lambda (node compiler)
-    `['60 put]))
+    '(dec P)))
 
 (syntax bf-next
   (lambda (node compiler)
-    `['62 put]))
+    '(inc P)))
 
 (syntax bf-while
   (lambda (node compiler)
-    `['91 put]))
-
-(syntax bf-wend
-  (lambda (node compiler)
-    `['93 put]))
+    `(while (!= 0 (char@ P))
+      ,@[node copyFrom: '1])))
 
 (syntax bf-inc
   (lambda (node compiler)
-    `['43 put]))
+    '(inc (char@ P))))
  
 (syntax bf-dec
   (lambda (node compiler)
-    `['45 put]))
+    '(dec (char@ P))))
+

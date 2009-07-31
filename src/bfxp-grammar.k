@@ -42,6 +42,7 @@
     // keywords
     //
     IF          = 'if' _
+    ELSE        = 'else' _
     WHILE       = 'while' _
     
     //
@@ -73,60 +74,34 @@
     left =
           identifier->0 <- `(bfxp-varaddress ,[self @ '0])
 
-    value = (
-            application->1
+    value = 
+          ( number->0 <- `(bf2k-seti ,[self @ '0])->1
+          | application->1
           | left->0 <- `(let () ,[self @ '0] (bfxp-cell ,[self @ '0]))->1
-          | number->0 <- `(bf2k-seti ,[self @ '0])->1
-            ) <- [self @ '1]
+          ) <- [self @ '1]
 
-    sum = expression->0 PLUS value->1
-            <- `(let ()
-                  ,[self @ '0]
-                  (bfxp-addbackward 3)
-                  ,[self @ '1]
-                  (bfxp-prev 3)
-                  (bfxp-addforward 3)
-                  (bfxp-next 3))
-
-    difference = expression->0 MINUS value->1
-            <- `(let ()
-                  ,[self @ '0]
-                  (bfxp-addbackward 3)
-                  ,[self @ '1]
-                  (bfxp-prev 3)
-                  (bfxp-subforward 3)
-                  (bfxp-next 3))
-
-    comparison = expression->0 COMPARE value->1
-            <- `(let ()
-                  ,[self @ '0]
-                  (bfxp-addbackward 3)
-                  ,[self @ '1]
-                  (bfxp-prev 3)
-                  (bfxp-subforward 3)
-                  (bfxp-next 3))
-
-    expression = value
-               | sum
-               | difference
-               | comparison
+    expression = value->0
+               ( PLUS  value->1 <-`(bfxp-sum ,[self @ '0] ,[self @ '1])->0
+               | MINUS value->1 <-`(bfxp-difference ,[self @ '0] ,[self @ '1])->0
+               | COMPARE value->1 <-`(bfxp-compare ,[self @ '0] ,[self @ '1])->0
+               )* <- [self @ '0]
 
     assignment = (
-          left->0 ASSIGN value->1
+          left->0 ASSIGN expression->1
           ) <- `(let ()
                   ,[self @ '1]
                   ,[self @ '0]
                   (bfxp-store))
 
     assignmentadd = (
-          left->0 ASSIGNADD value->1
+          left->0 ASSIGNADD expression->1
           ) <- `(let ()
                   ,[self @ '1]
                   ,[self @ '0]
                   (bfxp-add))
 
     assignmentsub = (
-          left->0 ASSIGNSUB value->1
+          left->0 ASSIGNSUB expression->1
           ) <- `(let ()
                   ,[self @ '1]
                   ,[self @ '0]
@@ -135,23 +110,31 @@
     application =
           GETC STARTPARA ENDPARA
             <- `(bf-getc)
-        | PUTI STARTPARA value->0 ENDPARA
+        | PUTI STARTPARA expression->0 ENDPARA
             <- `(let ()
                   ,[self @ '0]
                   (bf2k-puti))
-        | PUTC STARTPARA value->0 ENDPARA
+        | PUTC STARTPARA expression->0 ENDPARA
             <- `(let ()
                   ,[self @ '0]
                   (bf-putc))
    
-    while = WHILE STARTPARA value->0 ENDPARA STARTBLOCK
+    while = WHILE STARTPARA expression->0 ENDPARA STARTBLOCK
               statement*->1
             ENDBLOCK <- `(let ()
                            ,[self @ '0]
-                           (bf-while)
+                           (bf-while
                              ,@[self @ '1]
-                             ,[self @ '0]
-                           (bf-wend))
+                             ,[self @ '0]))
+
+    ifthenelse = IF STARTPARA expression->0 ENDPARA STARTBLOCK
+                   statement*->1
+                     <- `(bfxp-ifthenelse ,[self @ '0] ,[self @ '1] ()) ->0
+                 ENDBLOCK
+                 (ELSE STARTBLOCK
+                   statement*->2
+                     <- [[self @ '0] at: '3 put: [self @ '2]]
+                  ENDBLOCK)? <- [self @ '0]
    
     statement =
          ((declaration
@@ -160,6 +143,7 @@
         |  assignmentsub
         |  application)
            semicolon)
+        |  ifthenelse
         |  while
     
     statements = statement*->0

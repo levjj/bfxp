@@ -2,10 +2,12 @@
 
 byte a;
 byte b;
-a = 8 + 5;
-b = getc(b);
-b = b - 48;
-if (b == 3) {
+
+a = 4 + 5;
+b = a - 6 + 2;
+puti(b); # prints 5
+
+if (b == 5) {
   puti(1);
 } else {
   puti(2);
