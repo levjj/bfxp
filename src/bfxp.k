@@ -23,7 +23,7 @@
 ;;  Constants
 ;;  ---------
 
-(define TemporaryFields 3)
+(define TemporaryFields 4)
 
 ;;  -------
 ;;  Imports
@@ -341,6 +341,7 @@
   ;;         L := D[A]
   (lambda (node compiler)
     `(let ()
+      (bf2k-seti 0) ;; L := 0
       (bfxp-fetchcell) ;; set T2 to varname value
       (bfxp-prev 2) ; move pointer to T2
       (bfxp-addforward2 1 2) ;; move value of T2 to T1 and L
@@ -368,7 +369,7 @@
       (bfxp-add)))) ; D[A] := D[A] + L
 
 (syntax bfxp-varaddress
-  ;; call: (bfxp-getaddress varname)
+  ;; call: (bfxp-varaddress varname)
   ;; prerequisites: pointer at L
   ;;                varname is in SymbolTable
   ;; result: pointer at L
@@ -380,7 +381,7 @@
       (bfxp-prev 2)))) ; move pointer to L
 
 (syntax bfxp-arrayaddress
-  ;; call: (bfxp-arrayaddress varname)
+  ;; call: (bfxp-arrayaddress varname expression)
   ;; prerequisites: pointer at L
   ;;                A = index in array
   ;;                varname is in SymbolTable
@@ -388,9 +389,16 @@
   ;;         A := address of varname + index
   (lambda (node compiler)
     `(let ()
-      (bfxp-next 2) ; move pointer to A
-      (bf2k-inc ,(get-var [node second])) ; add varname base address to A
-      (bfxp-prev 2)))) ; move pointer to L
+      (bfxp-prev 4) ; move pointer to T4
+      (bf2k-seti 0) ; T4 := 0
+      (bfxp-next 4) ; move pointer to L
+      (bfxp-addbackward 4) ; T4 := L'
+      ,[node third] ; insert computation of index into L
+      (bfxp-varaddress ,[node second]) ; A := varname address
+      (bfxp-addforward 2) ; A := A + computed index
+      (bfxp-prev 4) ; move pointer to T4
+      (bfxp-addforward 4) ; L := L'
+      (bfxp-next 4)))) ; move pointer to L
 
 (syntax bfxp-sum
   ;; call: (bfxp-sum expression value)

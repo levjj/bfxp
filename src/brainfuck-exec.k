@@ -1,4 +1,5 @@
 ;; Semantics to execute a Brainfuck-AST
+;; (c) 2009 Michael Haupt, Christopher Schuster
 
 ;;; bind library functions
 (define putchar (dlsym "putchar"))
@@ -20,7 +21,7 @@
 (syntax bf-putc
   (lambda (node compiler)
     '(putchar (char@ P))))
-    
+
 (syntax bf-getc
   (lambda (node compiler)
     '(set (char@ P) (getchar))))
@@ -41,7 +42,7 @@
 (syntax bf-inc
   (lambda (node compiler)
     '(inc (char@ P))))
- 
+
 (syntax bf-dec
   (lambda (node compiler)
     '(dec (char@ P))))

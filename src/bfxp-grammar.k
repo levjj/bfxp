@@ -61,8 +61,11 @@
     // types
     //
     
-    type = BYTE <- '1
-         | BYTE STARTINDEX number->0 ENDINDEX <- [self @ '0]
+    type = BYTE <- '1 -> 1
+           (
+             STARTINDEX number->0 ENDINDEX <- [self @ '0] -> 1
+           )?
+           <- [self @ '1]
         
     //
     // syntax tree
@@ -71,8 +74,12 @@
     declaration =
           type->0 identifier->1 <- (add-var [self @ '1] [self @ '0])
 
-    left =
-          identifier->0 <- `(bfxp-varaddress ,[self @ '0])
+    left = identifier->0 <- `(bfxp-varaddress ,[self @ '0]) ->2
+           (
+             STARTINDEX expression->1 ENDINDEX
+               <- `(bfxp-arrayaddress ,[self @ '0] ,[self @ '1]) ->2
+           )?
+           <- [self @ '2]
 
     value = 
           ( number->0 <- `(bf2k-seti ,[self @ '0])->1

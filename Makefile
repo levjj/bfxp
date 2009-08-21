@@ -1,8 +1,8 @@
-JOLT2 = /home/cs/devel/cola/idst/function/jolt2
+JOLT2 = /home/cschuster/devel/cola/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k
-RUN = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-exec.k $(MAIN)
+RUN = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-exec16.k $(MAIN)
 
 .PHONY: doc
 
@@ -25,6 +25,9 @@ counter : $(MAIN) examples/counter.bfxp
 
 expr : $(MAIN) examples/expr.bfxp
 	$(RUN) examples/expr.bfxp
+
+array : $(MAIN) examples/array.bfxp
+	$(RUN) examples/array.bfxp
 
 clean : 
 	rm -f *~ *.so
