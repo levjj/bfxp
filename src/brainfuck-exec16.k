@@ -5,6 +5,8 @@
 (define putchar (dlsym "putchar"))
 (define getchar (dlsym "getchar"))
 
+(define SmallInteger (import "SmallInteger"))
+
 ;;; the memory
 (define mem-size 32768)
 (define memory (calloc mem-size 2))
@@ -20,7 +22,7 @@
 
 (syntax bf-putc
   (lambda (node compiler)
-    '(putchar (char@ P))))
+    '[StdErr nextPut: [SmallInteger value_: (char@ P)]]))
 
 (syntax bf-getc
   (lambda (node compiler)

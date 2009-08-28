@@ -1,4 +1,4 @@
-JOLT2 = /home/cs/devel/cola/idst/function/jolt2
+JOLT2 = /Users/haupt/pepsi/svn-trunk/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k
@@ -34,6 +34,9 @@ array : $(MAIN) examples/array.bfxp
 
 char : $(MAIN) examples/char.bfxp
 	$(RUN) examples/char.bfxp
+
+assign : $(MAIN) examples/assign.bfxp
+	$(RUN) examples/assign.bfxp
 
 bf : $(MAIN) brainfuck/brainfuck.bfxp
 	$(RUN) brainfuck/brainfuck.bfxp < brainfuck/hello.bf

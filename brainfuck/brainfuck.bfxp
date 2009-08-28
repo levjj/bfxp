@@ -4,34 +4,42 @@
 # michael.haupt@hpi.uni-potsdam.de
 # christopher.schuster@student.hpi.uni-potsdam.de
 
+# program counter and storage, stack for loops
+byte pc;        # the program counter
+byte sp;        # the stack pointer for the loop stack
+byte bc;        # bracket counter (to ensure the right closing bracket is met)
+byte scanning;  # control variable for finding the right closing bracket
+byte input;     # a character from the input (a brainfuck instruction)
+
 # data structures for the brainfuck environment
 # all are initialised to 0 by default
 byte p;         # the pointer
-byte[10000] m;  # the memory, an array of constant size
-
-# program counter and storage, stack for loops
-byte pc;        # the program counter
-byte[1000] c;   # this stores the code of a brainfuck program
-byte sp;        # the stack pointer for the loop stack
 byte[100] l;    # loop stack (contains addresses of left square brackets in c)
-byte bc;        # bracket counter (to ensure the right closing bracket is met)
-byte scanning;  # control variable for finding the right closing bracket
+byte[1000] c;   # this stores the code of a brainfuck program
+byte[10000] m;  # the memory, an array of constant size
 
 # the code of the brainfuck program will be read from standard input until the
 # stop character (%). After the stop character follows the input of the
 # brainfuck program
-byte input;
+
+puti(1);
+
+pc = 0;
 input = getc();
 while (input != '%') {
     c[pc] = input;
     pc += 1;
     input = getc();
 }
+c[pc] = '%';
 pc = 0; # reset PC
+
+puti(2);
 
 # main loop: run until pc hits zero
 input = c[pc]; # set input to first character in code
-while (input != 0) {
+while (input != '%') {
+    putc(input);
     if (input == '+') {
         m[p] += 1;
     }
@@ -52,10 +60,15 @@ while (input != 0) {
     }
     if (input == '[') {
         if (m[p] != 0) {
+            putc('/');
+            puti(pc);
             l[sp] = pc;
+            puti(l[sp]);
+            putc('/');
             sp += 1;
         } else {
             scanning = 1;
+            bc = 0;
             while (scanning) {
                 pc += 1;
                 if (c[pc] == '[') {
@@ -76,7 +89,7 @@ while (input != 0) {
        pc = l[sp];
      } else {
        pc += 1;
-     }     
+     }
      input = c[pc];
 }
 
