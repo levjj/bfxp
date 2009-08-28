@@ -430,8 +430,8 @@
        (bfxp-subforward 3) ; L := L - T3
        (bfxp-next 3)))) ; goto L
 
-(syntax bfxp-compare
-  ;; call: (bfxp-compare expression value)
+(syntax bfxp-equal
+  ;; call: (bfxp-equal expression value)
   ;; prerequisites: pointer at L
   ;; result: expression will be evaluated
   ;;         value will be evaluated

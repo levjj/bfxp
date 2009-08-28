@@ -1,4 +1,4 @@
-JOLT2 = /home/cschuster/devel/cola/idst/function/jolt2
+JOLT2 = /home/cs/devel/cola/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k
@@ -17,6 +17,9 @@ check : $(MAIN)
 test : $(MAIN) examples/a8.bfxp
 	$(RUN) examples/a8.bfxp
 
+test16 : $(MAIN) examples/test16.bfxp
+	$(RUN) examples/test16.bfxp
+
 fib : $(MAIN) examples/minifib.bfxp
 	$(RUN) examples/minifib.bfxp
 
@@ -28,6 +31,12 @@ expr : $(MAIN) examples/expr.bfxp
 
 array : $(MAIN) examples/array.bfxp
 	$(RUN) examples/array.bfxp
+
+char : $(MAIN) examples/char.bfxp
+	$(RUN) examples/char.bfxp
+
+bf : $(MAIN) brainfuck/brainfuck.bfxp
+	$(RUN) brainfuck/brainfuck.bfxp < brainfuck/hello.bf
 
 clean : 
 	rm -f *~ *.so

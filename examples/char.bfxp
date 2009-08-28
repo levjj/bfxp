@@ -1,0 +1,6 @@
+{ bfxp-program }
+
+byte a;
+a = 'A';
+a -= 60;
+puti(a); # should output 5

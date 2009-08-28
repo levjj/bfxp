@@ -18,12 +18,17 @@
     identifier  = ([a-zA-Z_][a-zA-Z_0-9]*) $->0 _
                     <- [[self @ '0] asSymbol]
     
+    escapeChar  = 'n' <- '10 | 'r' <- '13 | 't' <-  '9
+    char        = "'" ('\\' escapeChar ->0 | . ->0 ) "'"
+                    <- [self @ '0]
+    
     //
     // operators
     //
     PLUS        = '+' _
     MINUS       = '-' _
-    COMPARE     = '==' _
+    EQUAL       = '==' _
+    NEQUAL      = '!=' _
     ASSIGN      = '=' _
     ASSIGNADD   = '+=' _
     ASSIGNSUB   = '-=' _
@@ -82,7 +87,8 @@
            <- [self @ '2]
 
     value = 
-          ( number->0 <- `(bf2k-seti ,[self @ '0])->1
+          ( char->0 <- `(bf2k-seti ,[self @ '0])->1
+          | number->0 <- `(bf2k-seti ,[self @ '0])->1
           | application->1
           | left->0 <- `(let () ,[self @ '0] (bfxp-cell ,[self @ '0]))->1
           ) <- [self @ '1]
@@ -90,7 +96,8 @@
     expression = value->0
                ( PLUS  value->1 <-`(bfxp-sum ,[self @ '0] ,[self @ '1])->0
                | MINUS value->1 <-`(bfxp-difference ,[self @ '0] ,[self @ '1])->0
-               | COMPARE value->1 <-`(bfxp-compare ,[self @ '0] ,[self @ '1])->0
+               | EQUAL value->1 <-`(bfxp-equal ,[self @ '0] ,[self @ '1])->0
+               | NEQUAL value->1 <-`(bfxp-difference ,[self @ '0] ,[self @ '1])->0
                )* <- [self @ '0]
 
     assignment = (
