@@ -22,9 +22,6 @@ byte[10000] m;  # the memory, an array of constant size
 # stop character (%). After the stop character follows the input of the
 # brainfuck program
 
-puti(1);
-
-pc = 0;
 input = getc();
 while (input != '%') {
     c[pc] = input;
@@ -34,12 +31,10 @@ while (input != '%') {
 c[pc] = '%';
 pc = 0; # reset PC
 
-puti(2);
-
 # main loop: run until pc hits zero
 input = c[pc]; # set input to first character in code
 while (input != '%') {
-    putc(input);
+    # putc(input);
     if (input == '+') {
         m[p] += 1;
     }
@@ -60,11 +55,7 @@ while (input != '%') {
     }
     if (input == '[') {
         if (m[p] != 0) {
-            putc('/');
-            puti(pc);
             l[sp] = pc;
-            puti(l[sp]);
-            putc('/');
             sp += 1;
         } else {
             scanning = 1;

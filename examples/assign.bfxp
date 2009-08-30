@@ -1,5 +1,6 @@
 { bfxp-program }
 
+byte d;
 byte a;
 byte b;
 
@@ -7,11 +8,12 @@ byte[10] x;
 
 a = 9;
 b = a;
-x[2] = 7;
-x[a] = 5;
 
-puti(a);    # 9
-puti(b);    # 9
-puti(x[2]); # 7
-puti(x[a]); # 5
-puti(x[9]); # 5
+puti(b); # 9
+
+if (x[b] != 9) {
+    puti(b); # 9
+}
+
+puti(b); # 9
+

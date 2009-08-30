@@ -385,6 +385,7 @@
   ;; prerequisites: pointer at L
   ;;                A = index in array
   ;;                varname is in SymbolTable
+  ;;                L might contain value to assign
   ;; result: pointer at L
   ;;         A := address of varname + index
   (lambda (node compiler)
@@ -424,6 +425,9 @@
   (lambda (node compiler)
     `(let ()
        ,[node third] ; evaluate value
+       (bfxp-prev 3) ; goto T3
+       (bf2k-seti 0) ; T3 := 0
+       (bfxp-next 3) ; goto L
        (bfxp-addbackward 3) ; store result in T3
        ,[node second] ; evaluate expression
        (bfxp-prev 3) ; goto T3
@@ -442,6 +446,9 @@
   ;;         }
   (lambda (node compiler)
     `(let ()
+       (bfxp-prev 3) ; goto T3
+       (bf2k-seti 0) ; T3 := 0
+       (bfxp-next 3) ; goto L
        ,[node second] ; evaluate expression
        (bfxp-addbackward 3) ; store result in T3
        ,[node third] ; evaluate value
@@ -475,13 +482,16 @@
        (bf2k-seti 1) ; T1 := 1
        (bf-next) ; goto L
        (bf-while     ; if (L > 0)
+         (bf-prev)       ;   goto T1
+         (bf2k-seti 0)  ;   T1 := 0
+         (bf-next) ; goto L
          ,@[node third] ; evaluate ifcase       
-         (bf-prev)   ;   goto T1
-         (bf-dec)    ;   T1 := 0
-         (bf-next)   ;   goto L
-         (bf2k-seti 0));   L := 0
-         (bf-prev) ; goto T1
-         (bf-while     ; if (T1 > 0)
+         (bf2k-seti 0)  ;   L := 0
+         (bf-prev)       ;   goto T1
+         (bf2k-seti 0)  ;   T1 := 0
+         (bf-next)) ; goto L
+       (bf-prev) ; goto T1
+       (bf-while     ; if (T1 > 0)
            (bf-next)   ;   goto L
            ,@[node fourth] ; evaluate elsecase
            (bf2k-seti 0) ;   L := 0
