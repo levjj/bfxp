@@ -23,7 +23,7 @@
 ;;  Constants
 ;;  ---------
 
-(define TemporaryFields 4)
+(define TemporaryFields 5)
 
 ;;  -------
 ;;  Imports
@@ -81,7 +81,7 @@
     `(timesrepeat
       ,[node second]
       (bf-inc))))
- 
+
 (syntax bf2k-dec
   ;; call: (bf2k-dec n)
   ;; prerequisites: none
@@ -368,6 +368,27 @@
       (bfxp-goback) ; goto L
       (bfxp-add)))) ; D[A] := D[A] + L
 
+(syntax bfxp-special-seti
+  ;; call: (bf2k-special-seti n)
+  ;; prerequisites: pointer at A
+  ;; result: sets the value of A to n by multiplying T5 with 100
+  ;;         this reduces the amounts of '+'
+  (lambda (node compiler)
+    (let ((value [node second]))
+      (if (< value 256)
+        `(bf2k-seti ,value)
+        `(let ()
+          (bf2k-seti 0) ; A := 0;
+          (bfxp-prev 7) ; goto T5
+          (bf2k-inc (/ ,value 100)) ;   T5 := value / 100;
+          (bf-while ; while (T5 > 0)
+            (bf-dec) ;   T5 := T5 - 1;
+            (bfxp-next 7) ; goto A
+            (bf2k-inc 100) ; A := A + 100
+            (bfxp-prev 7)) ; goto T5
+          (bfxp-next 7) ; goto A
+          (bf2k-inc (% ,value 100))))))) ; A := A + (value mod 100)
+
 (syntax bfxp-varaddress
   ;; call: (bfxp-varaddress varname)
   ;; prerequisites: pointer at L
@@ -377,7 +398,7 @@
   (lambda (node compiler)
     `(let ()
       (bfxp-next 2) ; move pointer to A
-      (bf2k-seti ,(get-var [node second])) ; put varname address in A
+      (bfxp-special-seti ,(get-var [node second])) ; put varname address in A
       (bfxp-prev 2)))) ; move pointer to L
 
 (syntax bfxp-arrayaddress

@@ -15,8 +15,8 @@ byte input;     # a character from the input (a brainfuck instruction)
 # all are initialised to 0 by default
 byte p;         # the pointer
 byte[100] l;    # loop stack (contains addresses of left square brackets in c)
-byte[1000] c;   # this stores the code of a brainfuck program
-byte[10000] m;  # the memory, an array of constant size
+byte[14900] c;   # this stores the code of a brainfuck program
+byte[14900] m;  # the memory, an array of constant size
 
 # the code of the brainfuck program will be read from standard input until the
 # stop character (%). After the stop character follows the input of the
