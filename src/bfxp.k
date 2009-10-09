@@ -78,18 +78,20 @@
   ;; prerequisites: none
   ;; result: increments value of CC with n
   (lambda (node compiler)
-    `(timesrepeat
-      ,[node second]
-      (bf-inc))))
+;.    `(timesrepeat
+;.      ,[node second]
+;.      (bf-inc))))
+    `(bf-incn ,[node second])))
 
 (syntax bf2k-dec
   ;; call: (bf2k-dec n)
   ;; prerequisites: none
   ;; result: decrements value of CC with n
   (lambda (node compiler)
-    `(timesrepeat
-      ,[node second]
-      (bf-dec))))
+;.    `(timesrepeat
+;.      ,[node second]
+;.      (bf-dec))))
+    `(bf-decn ,[node second])))
 
 (syntax bf2k-seti
   ;; call: (bf2k-seti n)
@@ -147,18 +149,20 @@
   ;; prerequisites: none
   ;; result: moves the pointer 5 cells to the right
   (lambda (node compiler)
-    `(timesrepeat
-      ,[node second]
-      (bf-next))))
+;.    `(timesrepeat
+;.     ,[node second]
+;.      (bf-next))))
+    `(bf-nextn ,[node second])))
  
 (syntax bfxp-prev
   ;; call: (bfxp-prev 5)
   ;; prerequisites: none
   ;; result: moves the pointer 5 cells to the left
   (lambda (node compiler)
-    `(timesrepeat
-      ,[node second]
-      (bf-prev))))
+;.    `(timesrepeat
+;.      ,[node second]
+;.      (bf-prev))))
+    `(bf-prevn ,[node second])))
 
 (syntax bfxp-setup
   ;; call: (bfxp-setup)
