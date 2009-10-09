@@ -5,18 +5,18 @@
 # christopher.schuster@student.hpi.uni-potsdam.de
 
 # program counter and storage, stack for loops
+byte input;     # a character from the input (a brainfuck instruction)
 byte pc;        # the program counter
 byte sp;        # the stack pointer for the loop stack
 byte bc;        # bracket counter (to ensure the right closing bracket is met)
 byte scanning;  # control variable for finding the right closing bracket
-byte input;     # a character from the input (a brainfuck instruction)
 
 # data structures for the brainfuck environment
 # all are initialised to 0 by default
 byte p;         # the pointer
 byte[100] l;    # loop stack (contains addresses of left square brackets in c)
 byte[14900] c;   # this stores the code of a brainfuck program
-byte[14900] m;  # the memory, an array of constant size
+byte[16384] m;  # the memory, an array of constant size
 
 # the code of the brainfuck program will be read from standard input until the
 # stop character (%). After the stop character follows the input of the
@@ -24,6 +24,7 @@ byte[14900] m;  # the memory, an array of constant size
 
 input = getc();
 while (input != '%') {
+    #putc('#');
     c[pc] = input;
     pc += 1;
     input = getc();
@@ -34,7 +35,7 @@ pc = 0; # reset PC
 # main loop: run until pc hits zero
 input = c[pc]; # set input to first character in code
 while (input != '%') {
-    # putc(input);
+    #putc(input);
     if (input == '+') {
         m[p] += 1;
     }

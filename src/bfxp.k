@@ -380,14 +380,14 @@
         `(let ()
           (bf2k-seti 0) ; A := 0;
           (bfxp-prev 7) ; goto T5
-          (bf2k-inc (/ ,value 100)) ;   T5 := value / 100;
+          (bf2k-inc (/ ,value 122)) ;   T5 := value / 122;
           (bf-while ; while (T5 > 0)
             (bf-dec) ;   T5 := T5 - 1;
             (bfxp-next 7) ; goto A
-            (bf2k-inc 100) ; A := A + 100
+            (bf2k-inc 122) ; A := A + 122
             (bfxp-prev 7)) ; goto T5
           (bfxp-next 7) ; goto A
-          (bf2k-inc (% ,value 100))))))) ; A := A + (value mod 100)
+          (bf2k-inc (% ,value 122))))))) ; A := A + (value mod 122)
 
 (syntax bfxp-varaddress
   ;; call: (bfxp-varaddress varname)
@@ -513,10 +513,10 @@
          (bf-next)) ; goto L
        (bf-prev) ; goto T1
        (bf-while     ; if (T1 > 0)
-           (bf-next)   ;   goto L
-           ,@[node fourth] ; evaluate elsecase
-           (bf2k-seti 0) ;   L := 0
-           (bf-prev) ; goto T1
-           (bf2k-seti 0)) ;   T1 := 0
-         (bf-next)))) ; goto L
-
+         (bf2k-seti 0)  ;   T1 := 0
+         (bf-next)   ;   goto L
+         ,@[node fourth] ; evaluate elsecase
+         (bf2k-seti 0) ;   L := 0
+         (bf-prev) ; goto T1
+         (bf2k-seti 0)) ;   T1 := 0
+       (bf-next)))) ; goto L

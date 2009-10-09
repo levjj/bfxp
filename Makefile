@@ -1,8 +1,10 @@
-JOLT2 = /home/cs/devel/cola/idst/function/jolt2
+JOLT2 = /home/cschuster/devel/cola/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k
-RUN = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-exec16.k $(MAIN)
+EXEC = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-exec16.k $(MAIN)
+PRINT = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-print.k $(MAIN)
+RUN = $(EXEC)
 
 .PHONY: doc
 
@@ -38,9 +40,18 @@ char : $(MAIN) examples/char.bfxp
 assign : $(MAIN) examples/assign.bfxp
 	$(RUN) examples/assign.bfxp
 
-bf : $(MAIN) brainfuck/brainfuck.bfxp
-	$(RUN) brainfuck/brainfuck.bfxp < brainfuck/hello.bf
+bf : $(MAIN) brainfuck/brainfuck.bfxp brainfuck/hello.bf
+	$(EXEC) brainfuck/brainfuck.bfxp < brainfuck/hello.bf
+
+brainfuck/brainfuck.bf : $(MAIN) brainfuck/brainfuck.bfxp
+	$(PRINT) brainfuck/brainfuck.bfxp > brainfuck/brainfuck.bf
+	echo "%" >> brainfuck/brainfuck.bf
+	cat brainfuck/ex.bf >> brainfuck/brainfuck.bf
+
+bfbf : $(MAIN) brainfuck/brainfuck.bfxp brainfuck/brainfuck.bf
+	$(EXEC) brainfuck/brainfuck.bfxp < brainfuck/brainfuck.bf	
 
 clean : 
 	rm -f *~ *.so
+	rm brainfuck/brainfuck.bf
 	@cd doc ; make clean
