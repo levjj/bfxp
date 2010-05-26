@@ -63,12 +63,6 @@
         ,[node third]
         (set a (+ a 1))))))
 
-;(define timesrepeat
-;  (lambda (times command)
-;    (if (== times 1)
-;      `(command)
-;      `(command ,@(timesrepeat (- times 1) 'command)))))
-
 ;;  ---------------------
 ;;  Brainfuck 2000 Macros
 ;;  ---------------------
@@ -78,20 +72,18 @@
   ;; prerequisites: none
   ;; result: increments value of CC with n
   (lambda (node compiler)
-;.    `(timesrepeat
-;.      ,[node second]
-;.      (bf-inc))))
-    `(bf-incn ,[node second])))
+    `(timesrepeat
+      ,[node second]
+      (bf-inc))))
 
 (syntax bf2k-dec
   ;; call: (bf2k-dec n)
   ;; prerequisites: none
   ;; result: decrements value of CC with n
   (lambda (node compiler)
-;.    `(timesrepeat
-;.      ,[node second]
-;.      (bf-dec))))
-    `(bf-decn ,[node second])))
+    `(timesrepeat
+      ,[node second]
+      (bf-dec))))
 
 (syntax bf2k-seti
   ;; call: (bf2k-seti n)
@@ -149,20 +141,18 @@
   ;; prerequisites: none
   ;; result: moves the pointer 5 cells to the right
   (lambda (node compiler)
-;.    `(timesrepeat
-;.     ,[node second]
-;.      (bf-next))))
-    `(bf-nextn ,[node second])))
+    `(timesrepeat
+     ,[node second]
+      (bf-next))))
  
 (syntax bfxp-prev
   ;; call: (bfxp-prev 5)
   ;; prerequisites: none
   ;; result: moves the pointer 5 cells to the left
   (lambda (node compiler)
-;.    `(timesrepeat
-;.      ,[node second]
-;.      (bf-prev))))
-    `(bf-prevn ,[node second])))
+    `(timesrepeat
+      ,[node second]
+      (bf-prev))))
 
 (syntax bfxp-setup
   ;; call: (bfxp-setup)

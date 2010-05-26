@@ -24,7 +24,6 @@ byte[16384] m;  # the memory, an array of constant size
 
 input = getc();
 while (input != '%') {
-    #putc('#');
     c[pc] = input;
     pc += 1;
     input = getc();
@@ -35,7 +34,6 @@ pc = 0; # reset PC
 # main loop: run until pc hits zero
 input = c[pc]; # set input to first character in code
 while (input != '%') {
-    #putc(input);
     if (input == '+') {
         m[p] += 1;
     }
@@ -84,4 +82,3 @@ while (input != '%') {
      }
      input = c[pc];
 }
-

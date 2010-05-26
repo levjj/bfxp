@@ -30,17 +30,9 @@
   (lambda (node compiler)
     '(dec P 1)))
 
-(syntax bf-prevn
-  (lambda (node compiler)
-    `(dec P ,[node second])))
-
 (syntax bf-next
   (lambda (node compiler)
     '(inc P 1)))
-
-(syntax bf-nextn
-  (lambda (node compiler)
-    `(inc P ,[node second])))
 
 (syntax bf-while
   (lambda (node compiler)
@@ -51,14 +43,6 @@
   (lambda (node compiler)
     '(inc (char@ P) 1)))
 
-(syntax bf-incn
-  (lambda (node compiler)
-    `(inc (char@ P) ,[node second])))
-
 (syntax bf-dec
   (lambda (node compiler)
     '(dec (char@ P) 1)))
-
-(syntax bf-decn
-  (lambda (node compiler)
-    `(dec (char@ P) ,[node second])))

@@ -1,4 +1,4 @@
-JOLT2 = /Users/haupt/pepsi/svn-trunk/idst/function/jolt2
+JOLT2 = /home/cs/cola/idst/function/jolt2
 LIBS = $(JOLT2)/boot.k
 FLAGS = 
 MAIN = src/bfxp.k src/bfxp-grammar.k
@@ -6,12 +6,7 @@ EXEC = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-exec16.k $(MAIN)
 PRINT = $(JOLT2)/main $(FLAGS) $(LIBS) src/brainfuck-print.k $(MAIN)
 RUN = $(EXEC)
 
-.PHONY: doc
-
 all :   test
-
-doc :
-	@cd doc; make	
 
 check : $(MAIN)
 	$(JOLT2)/main $(FLAGS) $(LIBS) $(MAIN)
@@ -54,4 +49,3 @@ bfbf : $(MAIN) brainfuck/brainfuck.bfxp brainfuck/brainfuck.bf
 clean : 
 	rm -f *~ *.so
 	rm brainfuck/brainfuck.bf
-	@cd doc ; make clean

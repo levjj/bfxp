@@ -16,17 +16,9 @@
   (lambda (node compiler)
     '['60 put]))
 
-(syntax bf-prevn
-  (lambda (node compiler)
-    `[[String new: ,[node second] withAll: '60] put]))
-
 (syntax bf-next
   (lambda (node compiler)
     '['62 put]))
-
-(syntax bf-nextn
-  (lambda (node compiler)
-    `[[String new: ,[node second] withAll: '62] put]))
 
 (syntax bf-while
   (lambda (node compiler)
@@ -39,14 +31,6 @@
   (lambda (node compiler)
     '['43 put]))
 
-(syntax bf-incn
-  (lambda (node compiler)
-    `[[String new: ,[node second] withAll: '43] put]))
- 
 (syntax bf-dec
   (lambda (node compiler)
     '['45 put]))
-
-(syntax bf-decn
-  (lambda (node compiler)
-    `[[String new: ,[node second] withAll: '45] put]))
