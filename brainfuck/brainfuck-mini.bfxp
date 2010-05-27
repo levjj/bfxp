@@ -1,5 +1,5 @@
 { bfxp-program }
-# a brainfuck implementation in bfxp
+# a brainfuck implementation in bfxp (for small brainfuck programs)
 # (c) 2009 Michael Haupt, Christopher Schuster
 # michael.haupt@hpi.uni-potsdam.de
 # christopher.schuster@student.hpi.uni-potsdam.de
@@ -14,9 +14,9 @@ byte scanning;  # control variable for finding the right closing bracket
 # data structures for the brainfuck environment
 # all are initialised to 0 by default
 byte p;         # the pointer
-byte[100] l;    # loop stack (contains addresses of left square brackets in c)
-byte[14900] c;   # this stores the code of a brainfuck program
-byte[16384] m;  # the memory, an array of constant size
+byte[32] l;     # loop stack (contains addresses of left square brackets in c)
+byte[112] c;    # this stores the code of a brainfuck program
+byte[112] m;    # the memory, an array of constant size
 
 # the code of the brainfuck program will be read from standard input until the
 # stop character (%). After the stop character follows the input of the

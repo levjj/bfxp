@@ -1,0 +1,84 @@
+{ bfxp-program }
+# a brainfuck implementation in bfxp (capable of executing itself)
+# (c) 2009 Michael Haupt, Christopher Schuster
+# michael.haupt@hpi.uni-potsdam.de
+# christopher.schuster@student.hpi.uni-potsdam.de
+
+# program counter and storage, stack for loops
+byte input;     # a character from the input (a brainfuck instruction)
+byte pc;        # the program counter
+byte sp;        # the stack pointer for the loop stack
+byte bc;        # bracket counter (to ensure the right closing bracket is met)
+byte scanning;  # control variable for finding the right closing bracket
+
+# data structures for the brainfuck environment
+# all are initialised to 0 by default
+byte p;         # the pointer
+byte[100] l;    # loop stack (contains addresses of left square brackets in c)
+byte[14900] c;   # this stores the code of a brainfuck program
+byte[16384] m;  # the memory, an array of constant size
+
+# the code of the brainfuck program will be read from standard input until the
+# stop character (%). After the stop character follows the input of the
+# brainfuck program
+
+input = getc();
+while (input != '%') {
+    c[pc] = input;
+    pc += 1;
+    input = getc();
+}
+c[pc] = '%';
+pc = 0; # reset PC
+
+# main loop: run until pc hits zero
+input = c[pc]; # set input to first character in code
+while (input != '%') {
+    if (input == '+') {
+        m[p] += 1;
+    }
+    if (input == '-') {
+        m[p] -= 1;
+    }
+    if (input == '>') {
+        p += 1;
+    }
+    if (input == '<') {
+        p -= 1;
+    }
+    if (input == '.') {
+        putc(m[p]);
+    }
+    if (input == ',') {
+        m[p] = getc();
+    }
+    if (input == '[') {
+        if (m[p] != 0) {
+            l[sp] = pc;
+            sp += 1;
+        } else {
+            scanning = 1;
+            bc = 0;
+            while (scanning) {
+                pc += 1;
+                if (c[pc] == '[') {
+                    bc += 1;
+                }
+                if (c[pc] == ']') {
+                    if (bc == 0) {
+                        scanning = 0;
+                    } else {
+                        bc -= 1;
+                    }
+                }
+            }
+        }
+     }
+     if (input == ']') {
+       sp -= 1;
+       pc = l[sp];
+     } else {
+       pc += 1;
+     }
+     input = c[pc];
+}

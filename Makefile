@@ -35,17 +35,22 @@ char : $(MAIN) examples/char.bfxp
 assign : $(MAIN) examples/assign.bfxp
 	$(RUN) examples/assign.bfxp
 
-bf : $(MAIN) brainfuck/brainfuck.bfxp brainfuck/hello.bf
-	$(EXEC) brainfuck/brainfuck.bfxp < brainfuck/hello.bf
+bf : $(MAIN) brainfuck/brainfuck-mini.bfxp etc/hello.bf
+	$(EXEC) brainfuck/brainfuck-mini.bfxp < etc/hello.bf
 
-brainfuck/brainfuck.bf : $(MAIN) brainfuck/brainfuck.bfxp
-	$(PRINT) brainfuck/brainfuck.bfxp > brainfuck/brainfuck.bf
-	echo "%" >> brainfuck/brainfuck.bf
-	cat brainfuck/ex.bf >> brainfuck/brainfuck.bf
+brainfuck/brainfuck-mini.bf : $(MAIN) brainfuck/brainfuck-mini.bfxp etc/ex.bf
+	$(PRINT) brainfuck/brainfuck-mini.bfxp > brainfuck/brainfuck-mini.bf
+	echo "%" >> brainfuck/brainfuck-mini.bf
+	cat etc/ex.bf >> brainfuck/brainfuck-mini.bf
 
-bfbf : $(MAIN) brainfuck/brainfuck.bfxp brainfuck/brainfuck.bf
-	$(EXEC) brainfuck/brainfuck.bfxp < brainfuck/brainfuck.bf	
+brainfuck/brainfuck-full.bf : $(MAIN) brainfuck/brainfuck-full.bfxp etc/ex.bf
+	$(PRINT) brainfuck/brainfuck-full.bfxp > brainfuck/brainfuck-full.bf
+	echo "%" >> brainfuck/brainfuck-full.bf
+	cat etc/ex.bf >> brainfuck/brainfuck-full.bf
+
+bfbf : $(MAIN) brainfuck/brainfuck-full.bfxp brainfuck/brainfuck-mini.bf
+	$(EXEC) brainfuck/brainfuck-full.bfxp < brainfuck/brainfuck-mini.bf
 
 clean : 
 	rm -f *~ *.so
-	rm brainfuck/brainfuck.bf
+	rm -f brainfuck/*.bf
