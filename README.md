@@ -81,13 +81,15 @@ Literals
 There are two literals:
 
 **Numbers**
-*  are expected in decimal format without leading minus, fractions or scientific notation.
-*  *Examples: 0, 2, 4, 23*
+
+-   are expected in decimal format without leading minus, fractions or scientific notation.
+-   *Examples: 0, 2, 4, 23*
 
 **Characters**
-*  consists of single characters enclosed in single quotation marks.
-*  The special escape sequences are \n, \r and \t
-*  *Examples: 'a', 'Z', '\n'*
+
+-   consists of single characters enclosed in single quotation marks.
+-   The special escape sequences are \n, \r and \t
+-   *Examples: 'a', 'Z', '\n'*
 
 Variables
 -----
@@ -101,46 +103,55 @@ Variables must be declared prior to usage. **Brainfuck XP** is weak, statically
 typed and supports only two types:
 
 **Bytes**
-*  Bytes are treated as positive integer values, but the actual size of the integer depends on the underlying *brainfuck* implementation.
-*  *Example: `byte b;`*
+
+-   Bytes are treated as positive integer values, but the actual size of the integer depends on the underlying *brainfuck* implementation.
+-   *Example: `byte b;`*
 
 **Arrays**
-*  Arrays must be statically allocated and only bytes are allowed as elements. The elements can be accessed by using square brackets
-*  *Example: `byte[3] array;`*
+
+-   Arrays must be statically allocated and only bytes are allowed as elements. The elements can be accessed by using square brackets
+-   *Example: `byte[3] array;`*
 
 Operators
 ---------
 
 "+" (Plus)
-*  Adds the two bytes
-*  *Example: `i + 3`*
+
+-   Adds the two bytes
+-   *Example: `i + 3`*
 
 "-" (Minus)
-*  Subtracts the second byte from the first one
-*  *Example: `i - 1`*
+
+-   Subtracts the second byte from the first one
+-   *Example: `i - 1`*
 
 "==" (Equals)
-*  Compares two bytes and returns true if these are equal
-*  *Example: `i == 0`*
+
+-   Compares two bytes and returns true if these are equal
+-   *Example: `i == 0`*
 
 "!=" (Not equals)
-*  Compares two bytes and returns true if these are not equal
-*  *Example: `i != 0`*
+
+-   Compares two bytes and returns true if these are not equal
+-   *Example: `i != 0`*
 
 "=" (Assign)
-*  Only valid if left side is a variable.
-*  Stores the value on the right side in the variable on the left side.
-*  *Example: `e = 3`*
+
+-   Only valid if left side is a variable.
+-   Stores the value on the right side in the variable on the left side.
+-   *Example: `e = 3`*
 
 "+=" (Assign add)
-*  Only valid if left side is a variable.
-*  Adds two bytes and stores the result in the variable on the left side.
-*  *Example: `i += 1`*
+
+-   Only valid if left side is a variable.
+-   Adds two bytes and stores the result in the variable on the left side.
+-   *Example: `i += 1`*
 
 "-=" (Assign sub)
-*  Only valid if left side is a variable.
-*  Subtracts the value on the right side from the variable on the left side.
-*  *Example: `i -= 2`*
+
+-   Only valid if left side is a variable.
+-   Subtracts the value on the right side from the variable on the left side.
+-   *Example: `i -= 2`*
 
 Statements
 ----------
@@ -148,23 +159,27 @@ Statements
 A **Brainfuck XP** program consists of statements. Each statement ends with a
 semicolon except for the if-then-else and the while statement.
 
-Declaration
-*  Declares type and name of a variable. Ends with a semicolon.
-*  *Example: `byte i;`*
+**Declaration**
 
-Simple Statement
-*  Executes a line of code. Ends with a semicolon.
-*  *Example: `i = 1;`*
+-   Declares type and name of a variable. Ends with a semicolon.
+-   *Example: `byte i;`*
 
-If-then-Else
-*  There are two different forms:
-*  1.  `if (EXPRESSION) { STATEMENTS* }`
-*  2.  `if (EXPRESSION) { STATEMENTS* } else { STATEMENTS* }`
-*  *Example: `if (i == 2) { puti(3); }`*
+**Simple Statement**
 
-While loop
-*  `while (EXPRESSION) { STATEMENTS* }`
-*  *Example: `while (i != 4) { i += 2; }`*
+-   Executes a line of code. Ends with a semicolon.
+-   *Example: `i = 1;`*
+
+**If-then-Else**
+
+-   There are two different forms:
+-   1.  `if (EXPRESSION) { STATEMENTS* }`
+-   2.  `if (EXPRESSION) { STATEMENTS* } else { STATEMENTS* }`
+-   *Example: `if (i == 2) { puti(3); }`*
+
+**While loop**
+
+-   `while (EXPRESSION) { STATEMENTS* }`
+-   *Example: `while (i != 4) { i += 2; }`*
 
 Built-in functions
 ------------------
@@ -172,17 +187,20 @@ Built-in functions
 There are three built-in functions in **Brainfuck XP**.
 
 **`byte getc()`**
-*  Reads and returns a character from the standard input.
-*  *Example: `c = getc();`*
+
+-   Reads and returns a character from the standard input.
+-   *Example: `c = getc();`*
 
 **`void putc(byte c)`**
-*  Write the character *c* to the standard output.
-*  *Example: `putc('.');`*
+
+-   Write the character *c* to the standard output.
+-   *Example: `putc('.');`*
 
 **`void puti(byte i)`**
-*  Write the decimal representation of *i* to the standard output.
-*  Works only for values between 0 and 9.
-*  *Example: `puti(6);`*
+
+-   Write the decimal representation of *i* to the standard output.
+-   Works only for values between 0 and 9.
+-   *Example: `puti(6);`*
 
 Examples
 ========
